@@ -1,14 +1,28 @@
 const quoteContainer = document.querySelector("#quote-container");
 const quoteText = document.querySelector("#quote");
 const quoteAuthor = document.querySelector("#author");
-const twitterBtn = document.querySelector("#twitter-btn");
+const twitterBtn = document.querySelector("#twitter");
 const newQuoteBtn = document.querySelector("#new-quote");
+const loader = document.querySelector("#loader");
 
 
 let apiQuotes=[];
 
+//show loading
+function loading(){
+    loader.hidden = false;
+    quoteContainer.hidden= true;
+}
+
+//hide loading 
+function complete(){
+    loader.hidden = true;
+    quoteContainer.hidden= false;
+}
+
 //show new quote
 function newQuote(){
+    loading();
     //pick a random quote from apiQuotes array
     const quote = apiQuotes[Math.floor(Math.random() * apiQuotes.length)];
     
@@ -24,15 +38,16 @@ function newQuote(){
          quoteText.classList.add('long-quote');
          
      } else {
-         quoteText.classList.remove('long-text');
+         quoteText.classList.remove('long-quote');
      }
     
-    
-    // quoteAuthor.innerHTML =quote.author;
+    //set quote, hide loader
     quoteText.innerHTML=quote.text;
+    complete();
 }
 //get quotes from API
 async function getQuote(){
+    loading();
   const apiUrl= 'https://type.fit/api/quotes';
   try {
       const response = await fetch(apiUrl);
@@ -43,6 +58,21 @@ async function getQuote(){
 //Catch error here
  } 
 }
+
+//tweet quote
+function tweetQuote(){
+    const twitterUrl= `https://twitter.com/intent/tweet?text=${quoteText.innerHTML} - ${quoteAuthor.innerHTML}`;
+    window.open(twitterUrl, '_blank');
+
+}
+//Event Listeners
+newQuoteBtn.addEventListener('click', newQuote);
+
+twitterBtn.addEventListener('click',tweetQuote);
+
+
+
+
 
 //on Load
 
